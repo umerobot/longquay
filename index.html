@@ -1,47 +1,69 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Login System</title>
-</head>
-<body>
-    <h1>Login</h1>
-    <form id="login-form">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"><br>
-        <button type="submit">Login</button>
-    </form>
+<body onload = "getLocation()">
 
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Perform authentication here by making an API request to your Google Sheet.
-            // You will need to use the Google Sheets API for this.
+<p id="demo"></p>
+<p id="test"></p>
+<script>
 
-            // Example using the Fetch API:
-            fetch('https://docs.google.com/spreadsheets/d/13iSbBcGQXDxCKPIdydQbcVmj1Os50Ay4UU1KDflbrXA/edit#gid=0', {
-                method: 'POST',
-                body: JSON.stringify({ username, password }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.authenticated) {
-                    alert('Login successful!');
-                } else {
-                    alert('Login failed. Please check your credentials.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
+
+function distance(lat1,lat2, lon1, lon2)
+    {
+   
+        // The math module contains a function
+        // named toRadians which converts from
+        // degrees to radians.
+        lon1 =  lon1 * Math.PI / 180;
+        lon2 = lon2 * Math.PI / 180;
+        lat1 = lat1 * Math.PI / 180;
+        lat2 = lat2 * Math.PI / 180;
+   
+        // Haversine formula 
+        let dlon = lon2 - lon1; 
+        let dlat = lat2 - lat1;
+        let a = Math.pow(Math.sin(dlat / 2), 2)
+                 + Math.cos(lat1) * Math.cos(lat2)
+                 * Math.pow(Math.sin(dlon / 2),2);
+               
+        let c = 2 * Math.asin(Math.sqrt(a));
+   
+        // Radius of earth in kilometers. Use 3956 
+        // for miles
+        let r = 6371;
+   
+        // calculate the result
+        return(c * r);
+    }
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  var lat1 = 13.567538;
+  var lon1 = 100.564077;
+  var lat2 = position.coords.latitude;
+  var lon2 = position.coords.longitude;
+  let ReKM = distance(lat1, lat2,lon1, lon2);
+  let ReM = ReKM * 1000;
+  
+  //document.getElementById("demo").innerHTML = ReKM + " KM.";
+  //document.getElementById("test").innerHTML = ReM + " M.";
+  
+  if(ReM <= 500){
+  	window.location.href="https://psjdcol-activity.mdbgo.io/";
+  }else{
+  	alert("คุณไม่ได้อยู่ในพื้นที่เข้าแถวหน้าเสาธง กรุณาเช็คชื่อในบริเวณหน้าเสาธง").delay(500);
+    window.close();
+  }
+
+  
+}
+
+</script>
+
 </body>
 </html>
